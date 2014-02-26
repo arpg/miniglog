@@ -8,6 +8,11 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 set(LIBRARY_NAME miniglog)
 def_library(${LIBRARY_NAME} SOURCES miniglog/logging.h miniglog/logging.cc)
 
+install(TARGETS ${LIBRARY_NAME}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
+  LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
+  )
+
 if(EXPORT_MINIGLOG)
   export( TARGETS ${LIBRARY_NAME}
     FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake" )
