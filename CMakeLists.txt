@@ -7,6 +7,10 @@ include(def_library)
 set(USER_INC ${CMAKE_CURRENT_SOURCE_DIR}) # Variable used for config export
 include_directories(${USER_INC})
 
+if(NOT ANDROID)
+  option(BUILD_SHARED_LIBS "Build Shared Library" ON)
+endif()
+
 set(LIBRARY_NAME miniglog)
 def_library(${LIBRARY_NAME} SOURCES miniglog/logging.h miniglog/logging.cc)
 
