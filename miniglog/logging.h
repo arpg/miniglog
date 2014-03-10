@@ -173,7 +173,7 @@ class MessageLogger {
     : file_(file), line_(line), tag_(tag), severity_(severity) {
     // Pre-pend the stream with the file and line number.
     StripBasename(std::string(file), &filename_only_);
-    stream_ << filename_only_ << ":" << line << " ";
+    stream_ << SeverityLabel() << "/" << filename_only_ << ":" << line << " ";
   }
 
   // Output the contents of the stream to the proper channel on destruction.
@@ -258,6 +258,21 @@ class MessageLogger {
       *filename = full_path.substr(pos + 1, std::string::npos);
     } else {
       *filename = full_path;
+    }
+  }
+
+  char SeverityLabel() {
+    switch (severity_) {
+      case FATAL:
+        return 'F';
+      case ERROR:
+        return 'E';
+      case WARNING:
+        return 'W';
+      case INFO:
+        return 'I';
+      default:
+        return 'V';
     }
   }
 
