@@ -299,8 +299,9 @@ class LoggerVoidify {
 
 // Log only if condition is met.  Otherwise evaluates to void.
 #define LOG_IF(severity, condition) \
-    !(condition) ? (void) 0 : LoggerVoidify() & \
-      MessageLogger((char *)__FILE__, __LINE__, "native", severity).stream()
+  (static_cast<int>(severity) > google::log_severity_global || !(condition)) ? \
+  (void) 0 : LoggerVoidify() &                                          \
+  MessageLogger((char *)__FILE__, __LINE__, "native", severity).stream()
 
 // Log only if condition is NOT met.  Otherwise evaluates to void.
 #define LOG_IF_FALSE(severity, condition) LOG_IF(severity, !(condition))
@@ -309,21 +310,16 @@ class LoggerVoidify {
 // google3 code is discouraged and the following shortcut exists for
 // backward compatibility with existing code.
 #ifdef MAX_LOG_LEVEL
-#  define LOG(n)  LOG_IF(n, (                           \
-    static_cast<int>(n) <= google::log_severity_global) && n <= MAX_LOG_LEVEL)
-#  define VLOG(n) LOG_IF(n, (                           \
-    static_cast<int>(n) <= google::log_severity_global) && n <= MAX_LOG_LEVEL)
-#  define LG      LOG_IF(INFO, (INFO <= google::log_severity_global) && \
-                         INFO <= MAX_LOG_LEVEL)
+#  define LOG(n)  LOG_IF(n, (n <= MAX_LOG_LEVEL))
+#  define VLOG(n) LOG_IF(n, (n <= MAX_LOG_LEVEL))
+#  define LG      LOG_IF(INFO, (INFO <= MAX_LOG_LEVEL))
 #  define VLOG_IF(n, condition)                                         \
-  LOG_IF(n, (INFO <= google::log_severity_global) &&                    \
-         (n <= MAX_LOG_LEVEL) && condition)
+    LOG_IF(n, (n <= MAX_LOG_LEVEL) && condition)
 #else
-#  define LOG(n)  LOG_IF(n, static_cast<int>(n) <= google::log_severity_global)
-#  define VLOG(n) LOG_IF(n, static_cast<int>(n) <= google::log_severity_global)
-#  define LG      LOG_IF(INFO, INFO <= google::log_severity_global)
-#  define VLOG_IF(n, condition)                         \
-  LOG_IF(n, (static_cast<int>(n) <= google::log_severity_global) && condition)
+#  define LOG(n)  LOG_IF(n, true)
+#  define VLOG(n) LOG_IF(n, true)
+#  define LG      LOG_IF(INFO, true)
+#  define VLOG_IF(n, condition) LOG_IF(n, condition)
 #endif
 
 // Currently, VLOG is always on for levels below MAX_LOG_LEVEL.
