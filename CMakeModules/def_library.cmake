@@ -1,4 +1,5 @@
 include(CMakeParseArguments)
+include(SetSourceFlags)
 
 function(def_library lib)
 
@@ -50,14 +51,18 @@ function(def_library lib)
   endif()
 
   if(${cache_var})
-    add_library(${lib} ${lib_SOURCES})
-
+    if(ANDROID)
+      add_library(${lib} SHARED ${lib_SOURCES})
+    else()
+      add_library(${lib} ${lib_SOURCES})
+    endif()
     string(TOUPPER "${${build_type_cache_var}}" LIB_BUILD_TYPE)
 
     # Only alter the compile flags if the build type is set
     if (LIB_BUILD_TYPE)
-      set(lib_flags "${CMAKE_CXX_FLAGS} ${CMAKE_C_FLAGS} ${CMAKE_CXX_FLAGS_${LIB_BUILD_TYPE}} ${CMAKE_C_FLAGS_${LIB_BUILD_TYPE}}")
-      set_target_properties(${lib} PROPERTIES COMPILE_FLAGS ${lib_flags})
+      foreach(src_file ${lib_SOURCES})
+	set_source_flags("${src_file}" "${LIB_BUILD_TYPE}")
+      endforeach()
     endif()
 
     if(lib_DEPENDS)
@@ -66,6 +71,15 @@ function(def_library lib)
 
     if(lib_LINK_LIBS)
       target_link_libraries(${lib} ${lib_LINK_LIBS})
+    endif()
+
+    if(ANDROID)
+      find_library(GNUSTL_SHARED_LIBRARY gnustl_shared)
+
+      if(NOT GNUSTL_SHARED_LIBRARY)
+	message(FATAL_ERROR "Could not find required GNU STL shared library.")
+      endif()
+      target_link_libraries(${lib} log android z -pthread ${GNUSTL_SHARED_LIBRARY})
     endif()
   endif()
 endfunction()
