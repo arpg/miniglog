@@ -144,7 +144,7 @@ extern std::set<LogSink *> log_sinks_global;
 // Added by chachi - a runtime global maximum log level. Defined in logging.cc
 extern int log_severity_global;
 
-inline void InitGoogleLogging(char *argv) {
+inline void InitGoogleLogging(char */*argv*/) {
   // Do nothing; this is ignored.
 }
 
@@ -294,7 +294,7 @@ class LoggerVoidify {
   LoggerVoidify() { }
   // This has to be an operator with a precedence lower than << but
   // higher than ?:
-  void operator&(const std::ostream &s) { }
+  void operator&(const std::ostream &/*s*/) { }
 };
 
 // Log only if condition is met.  Otherwise evaluates to void.
