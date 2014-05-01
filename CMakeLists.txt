@@ -10,7 +10,10 @@ include_directories(${USER_INC})
 
 option(BUILD_SHARED_LIBS "Build Shared Library" ON)
 set(LIBRARY_NAME miniglog)
-def_library(${LIBRARY_NAME} SOURCES miniglog/logging.h miniglog/logging.cc)
+def_library(${LIBRARY_NAME}
+  SOURCES miniglog/logging.h miniglog/logging.cc
+  PACKAGE MINIGLOG
+  )
 
 export_package(MINIGLOG
   TARGETS miniglog
