@@ -340,8 +340,7 @@ class LoggerVoidify {
 // Log a message and terminate.
 template<class T>
 void LogMessageFatal(const char *file, int line, const T &message) {
-  MessageLogger((char *)__FILE__, __LINE__, "native", FATAL).stream()
-      << message;
+  MessageLogger(file, line, "native", FATAL).stream() << message;
 }
 
 // ---------------------------- CHECK macros ---------------------------------
