@@ -89,8 +89,8 @@
 // To use the debug only versions, prepend a D to the normal check macros, e.g.
 // DCHECK_EQ(a, b).
 
-#ifndef CERCES_INTERNAL_MINIGLOG_GLOG_LOGGING_H_
-#define CERCES_INTERNAL_MINIGLOG_GLOG_LOGGING_H_
+#ifndef _LOGGING_H_
+#define _LOGGING_H_
 
 #ifdef ANDROID
 #  include <android/log.h>
@@ -428,4 +428,4 @@ T& CheckNotNull(const char *file, int line, const char *names, T& t) {
   CheckNotNull(__FILE__, __LINE__, "'" #val "' Must be non NULL", (val))
 #endif  // NDEBUG
 
-#endif  // CERCES_INTERNAL_MINIGLOG_GLOG_LOGGING_H_
+#endif  // _LOGGING_H_
